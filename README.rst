@@ -23,7 +23,7 @@
 Abstract
 ========
 
-Purus sit amet luctus venenatis lectus magna fringilla. Condimentum id venenatis a condimentum vitae sapien. Auctor neque vitae tempus quam pellentesque nec nam aliquam. Eget egestas purus viverra accumsan in. Nam aliquam sem et tortor. Donec et odio pellentesque diam volutpat commodo. Odio pellentesque diam volutpat commodo sed egestas. Sit amet dictum sit amet justo. Pellentesque sit amet porttitor eget. Imperdiet sed euismod nisi porta lorem mollis aliquam ut. Quis varius quam quisque id diam vel quam elementum. Ornare lectus sit amet est placerat in. Vulputate dignissim suspendisse in est ante. Elit sed vulputate mi sit amet mauris. Egestas sed tempus urna et pharetra pharetra. Viverra tellus in hac habitasse platea dictumst vestibulum rhoncus.
+Автоматизация мониторинга становится важным направлением развития компьютерного зрения. Особый интерес представляет задача обнаружения морских млекопитающих (белух) — редкого и охраняемого вида, требующего внимательного и регулярного наблюдения. Цель исследования – повысить эффективность экологического мониторинга, сократив затраты на ручную обработку данных. Предложен комплексный подход: полуавтоматическая разметка видеоматериалов, обучение и сравнение современных детекторов, а также анализ их точности и скорости. Итоги показали явное преимущество нейросетевых методов и позволили выделить архитектуры, наиболее подходящие для практического применения в задачах долгосрочного наблюдения за популяциями.
 
 Research publications
 ===============================
