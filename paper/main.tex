@@ -1,158 +1,106 @@
+% !TEX program = pdflatex
 \documentclass{article}
 \usepackage{arxiv}
 
+% ------- Encoding / language -------
 \usepackage[utf8]{inputenc}
-\usepackage[english, russian]{babel}
-\usepackage[T1]{fontenc}
-\usepackage{url}
-\usepackage{booktabs}
+\usepackage[english,russian]{babel}
+\usepackage[T2A]{fontenc} % Для корректной кириллицы в pdfLaTeX
+
+% ------- Math / figures / tables -------
+\usepackage{amsmath,amssymb,mathtools}
 \usepackage{amsfonts}
 \usepackage{nicefrac}
 \usepackage{microtype}
-\usepackage{lipsum}
 \usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\sisetup{detect-all, table-number-alignment=center}
+\usepackage{subcaption}
+\usepackage{longtable}
+
+% ------- Citations / links -------
 \usepackage{natbib}
 \usepackage{doi}
+\usepackage{url}
 
+% ------- Title / metadata -------
+\title{Сравнение современных методов глубокого обучения\\
+для автоматической детекции белух в естественной среде}
 
-
-\title{A template for the \emph{arxiv} style}
-
-\author{ David S.~Hippocampus\thanks{Use footnote for providing further
-		information about author (webpage, alternative
-		address)---\emph{not} for acknowledging funding agencies.} \\
-	Department of Computer Science\\
-	Cranberry-Lemon University\\
-	Pittsburgh, PA 15213 \\
-	\texttt{hippo@cs.cranberry-lemon.edu} \\
-	%% examples of more authors
-	\And
-	Elias D.~Striatum \\
-	Department of Electrical Engineering\\
-	Mount-Sheikh University\\
-	Santa Narimana, Levand \\
-	\texttt{stariate@ee.mount-sheikh.edu} \\
-	%% \AND
-	%% Coauthor \\
-	%% Affiliation \\
-	%% Address \\
-	%% \texttt{email} \\
-	%% \And
-	%% Coauthor \\
-	%% Affiliation \\
-	%% Address \\
-	%% \texttt{email} \\
-	%% \And
-	%% Coauthor \\
-	%% Affiliation \\
-	%% Address \\
-	%% \texttt{email} \\
+\author{
+  Булкин Антон Павлович \\
+	Московский государственный университет имени М. В. Ломоносова \\
+        Научный руководитель: Кравцова Ольга Анатольевна \\
+ \texttt{bulkin261@gmail.com} \\
+  % TODO: Ваша аффилиация
+  % Пример:
+  % Кафедра \dots, Университет \dots \\
+  % Город, Страна \\
+  \texttt{<email@domain>} % TODO: ваша почта или удалите строку
 }
-\date{}
 
-\renewcommand{\shorttitle}{\textit{arXiv} Template}
+\date{2025} % при необходимости можно оставить пустым: \date{}
 
-%%% Add PDF metadata to help others organize their library
-%%% Once the PDF is generated, you can check the metadata with
-%%% $ pdfinfo template.pdf
+\renewcommand{\shorttitle}{Детекция белух: сравнение современных методов}
+
+% PDF metadata
 \hypersetup{
-pdftitle={A template for the arxiv style},
-pdfsubject={q-bio.NC, q-bio.QM},
-pdfauthor={David S.~Hippocampus, Elias D.~Striatum},
-pdfkeywords={First keyword, Second keyword, More},
+  pdftitle   = {Сравнение современных методов глубокого обучения для автоматической детекции белух в естественной среде},
+  pdfauthor  = {Булкин Антон Павлович},
+  pdfsubject = {Computer Vision, Object Detection, Wildlife Monitoring},
+  pdfkeywords= {детекция объектов, глубокое обучение, белуха, дроны, спутниковые снимки, трекинг, semi-automatic labeling},
+  colorlinks = true,
+  linkcolor  = {teal!60!black},
+  citecolor  = {teal!60!black},
+  urlcolor   = {blue!60!black}
 }
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-	\lipsum[1]
+В работе исследуются современные архитектуры глубокого обучения для автоматического мониторинга белух — редкого и охраняемого вида, требующего внимательного и регулярного наблюдения. Цель исследования — повысить эффективность мониторинга животных, минимизируя затраты времени и ресурсов на ручную обработку данных, а также создать систему отслеживания взаимодействия животных между собой в рамках одного видеофайла. Предложен комплексный подход: классические решения CV, полуавтоматическая разметка видеоматериалов, обучение и сравнение современных детекторов и трекеров, а также анализ их точности и скорости.
 \end{abstract}
 
+\keywords{детекция объектов \and глубокое обучение \and белуха \and дроны \and спутниковые снимки \and трекинг \and полуавтоматическая разметка}
 
-\keywords{First keyword \and Second keyword \and More}
+\section{Введение}
+Белуха — редкий и охраняемый вид морских млекопитающих, для которого необходимы регулярные и объективные наблюдения в естественной среде обитания. Традиционные подходы — полевые экспедиции, акустический мониторинг, визуальный подсчёт — трудоёмки, подвержены субъективности и ограничены по пространственному и временно́му охвату. Автоматизация на основе методов компьютерного зрения и глубокого обучения позволяет снизить затраты, повысить воспроизводимость и масштабировать мониторинг.
 
-\section{Introduction}
-\lipsum[2]
-\lipsum[3]
+Задача детекции морских млекопитающих в изображениях и видео обычно решается локализацией объектов с ограничивающими рамками и последующим трекингом. Ранние работы использовали классические техники и первые версии одноэтапных и двухэтапных детекторов, показывая базовую применимость, но чувствительность к условиям съёмки и фоновым помехам. Для видео широко применялись связки «детектор + трекер», повышающие устойчивость за счёт межкадровой ассоциации. Современные одноэтапные архитектуры семейства YOLO существенно улучшили соотношение точности и скорости и пригодны для сценариев реального времени. Трансформерные детекторы упрощают инференс, снимая необходимость в постобработке наподобие подавления немаксимумов, и повышают согласованность предсказаний на сложном фоне. Отдельное направление посвящено снижению стоимости аннотирования за счёт полуавтоматической разметки и стратегий активного обучения.
 
-\section{Headings: first level}
-\label{sec:headings}
+Ключевые трудности домена — малый видимый размер животных в кадре, блики и рябь воды, частичные окклюзии и близость визуально похожих фоновых объектов (лодки, буи, скалы, водоросли). Существенны доменный сдвиг между локациями и условиями съёмки и дисбаланс классов в многоклассовых сценариях. Высокая стоимость ручной аннотации приводит к ограниченным наборам и ошибкам разметки, что снижает переносимость моделей. Наконец, несогласованные протоколы оценки в литературе — разные наборы данных, пороги пересечения, препроцессинг — затрудняют прямое сравнение результатов и выбор решений для практики.
 
-\lipsum[4] See Section \ref{sec:headings}.
+В работе предлагается воспроизводимый бенчмарк детекции белух в реальной морской среде с унифицированным протоколом обучения и оценки. Подготовлены и сопоставлены наборы изображений разного масштаба — 400, 800, 1200 и около 8000 кадров, — где расширение корпуса достигается полуавтоматической разметкой: начальное обучение модели-помощника, автоматическая аннотация неразмеченных кадров и ручная валидация. Рассматриваются одноклассовая и многоклассовая разметки, что позволяет учитывать типичные фоновые объекты на воде.
 
-\subsection{Headings: second level}
-\lipsum[5]
-\begin{equation}
-	\xi _{ij}(t)=P(x_{t}=i,x_{t+1}=j|y,v,w;\theta)= {\frac {\alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}{\sum _{i=1}^{N} \sum _{j=1}^{N} \alpha _{i}(t)a^{w_t}_{ij}\beta _{j}(t+1)b^{v_{t+1}}_{j}(y_{t+1})}}
-\end{equation}
+\section{Обзор литературы / Related works}
+Исследования, посвящённые автоматическому мониторингу белух и других морских млекопитающих, активно развиваются в последние годы и охватывают как аэровидеосъёмку, так и анализ спутниковых данных.
+Одной из существенных современных работ является статья Alsaidi~\textit{et~al.}~\cite{alsaidi2024beluga_tracking}, где предложена система детекции и трекинга белух на аэровидео с использованием YOLOv7 и алгоритма DeepSORT. Модель показала высокую точность и полноту, а также устойчивость трекинга после постобработки. Аналогичные идеи развиваются в работе Harasyn~\textit{et~al.}~\cite{harasyn2022drone_beluga}, где YOLOv4 и DeepSORT применялись для детекции белух, каяков и лодок в видеопотоках с дронов; достигнута точность около 74\% и полнота 72\%.
+Lee~\textit{et~al.}~\cite{lee2021beluga_retinanet} исследовали RetinaNet и Faster~R-CNN на данных залива Камберленд, отметив, что использование тайлинга крупных изображений существенно повышает точность и уменьшает количество ложных срабатываний.
 
-\subsubsection{Headings: third level}
-\lipsum[6]
+Особое внимание уделяется построению и масштабированию наборов данных.
+Araújo~\textit{et~al.}~\cite{araujo2022beluga_sensors} представили датасет \textit{Beluga-5k} с более чем 5500 фотографиями белух и предложили полуавтоматическую разметку. Лучшая модель (YOLOv3-tiny) достигла 97{,}05\%~mAP@0.5, корректно обнаруживая белух даже в условиях сложного фона.
+Boulent~\textit{et~al.}~\cite{boulent2023humanloop} предложили интерактивную схему «человек в контуре», при которой нейросеть, обученная на 100 изображениях, достигла 91\% совпадения с экспертами и позволила ускорить аннотацию более чем в пять раз.
+Cubaynes и Fretwell~\cite{cubaynes2022whales_dataset} опубликовали набор спутниковых изображений \textit{Whales from Space}, включающий сотни размеченных примеров китов, что обеспечило возможность обучения моделей на данных высокого разрешения.
 
-\paragraph{Paragraph}
-\lipsum[7]
+Использование спутниковых снимков для мониторинга млекопитающих подтверждается рядом работ.
+Green~\textit{et~al.}~\cite{green2023gray} применили YOLOv5 для обнаружения серых китов на спутниковых снимках и достигли точности 80–94\% при полноте 84–89\%.
+Guirado~\textit{et~al.}~\cite{guirado2019whale_count} предложили каскадный подход, объединяющий классификацию наличия китов и подсчёт особей, что увеличило общую точность на 36\% по сравнению с одноэтапными методами.
+Borowicz~\textit{et~al.}~\cite{borowicz2019aerial} показали, что CNN, обученные на аэрофотоснимках, могут быть перенесены на спутниковые данные без значительной потери качества.
 
+В области общих архитектур объектной детекции значительную роль сыграли двухэтапные модели (Faster~R-CNN~\cite{ren2015fasterrcnn}), обеспечившие высокую точность за счёт сети предложений регионов.
+Одноэтапные детекторы, начиная с YOLO~\cite{redmon2016yolo} и YOLO9000~\cite{redmon2017yolo9000}, позволили объединить локализацию и классификацию в одном прогоне сети, достигнув 45–60~FPS.
+RetinaNet~\cite{lin2017focal} с функцией Focal~Loss улучшил устойчивость к дисбалансу классов и повысил точность при сохранении скорости.
+Последующие версии YOLO (в частности, YOLOv7~\cite{wang2022yolov7}) установили новый стандарт по соотношению точности и производительности.
 
+Трансформерные подходы (DETR~\cite{carion2020end}, RT-DETR~\cite{zhao2023rtdetr}) позволили отказаться от постобработки (NMS) и выполнять end-to-end детекцию. RT-DETR показал сопоставимую с YOLO точность при сохранении real-time скорости, что делает его перспективным для видеоаналитики.
+Модели открытого словаря (ViLD~\cite{gu2021vild}, GLIP~\cite{li2022glip}, YOLO-World~\cite{cheng2024yoloworld}) расширили возможности детекции на неизвестные классы, включая морские объекты, что особенно важно для практических систем, где структура сцены заранее не фиксирована.
 
-\section{Examples of citations, figures, tables, references}
-\label{sec:others}
-
-\subsection{Citations}
-Citations use \verb+natbib+. The documentation may be found at
-\begin{center}
-	\url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-\end{center}
-
-Here is an example usage of the two main commands (\verb+citet+ and \verb+citep+): Some people thought a thing \citep{kour2014real, hadash2018estimate} but other people thought something else \citep{kour2014fast}. Many people have speculated that if we knew exactly why \citet{kour2014fast} thought this\dots
-
-\subsection{Figures}
-\lipsum[10]
-See Figure \ref{fig:fig1}. Here is how you add footnotes. \footnote{Sample of the first footnote.}
-\lipsum[11]
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.5\textwidth]{../figures/log_reg_cs_exp.eps}
-	\caption{Sample figure caption.}
-	\label{fig:fig1}
-\end{figure}
-
-\subsection{Tables}
-See awesome Table~\ref{tab:table}.
-
-The documentation for \verb+booktabs+ (`Publication quality tables in LaTeX') is available from:
-\begin{center}
-	\url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-
-
-\begin{table}
-	\caption{Sample table title}
-	\centering
-	\begin{tabular}{lll}
-		\toprule
-		\multicolumn{2}{c}{Part}                   \\
-		\cmidrule(r){1-2}
-		Name     & Description     & Size ($\mu$m) \\
-		\midrule
-		Dendrite & Input terminal  & $\sim$100     \\
-		Axon     & Output terminal & $\sim$10      \\
-		Soma     & Cell body       & up to $10^6$  \\
-		\bottomrule
-	\end{tabular}
-	\label{tab:table}
-\end{table}
-
-\subsection{Lists}
-\begin{itemize}
-	\item Lorem ipsum dolor sit amet
-	\item consectetur adipiscing elit.
-	\item Aliquam dignissim blandit est, in dictum tortor gravida eget. In ac rutrum magna.
-\end{itemize}
-
+Обзор Tuia~\textit{et~al.}~\cite{tuia2022wildlife} подчёркивает важность машинного обучения для экологического мониторинга. Авторы указывают, что интеграция глубоких моделей с полевыми данными и дроновыми системами позволяет существенно сократить стоимость и повысить масштабируемость наблюдений.
+Совокупно, эти исследования формируют основу для разработки универсального бенчмарка детекции белух и показывают актуальность сопоставления современных архитектур на единых данных и метриках.
 
 \bibliographystyle{unsrtnat}
-\bibliography{references}
+\bibliography{refs} % ваш .bib файл
 
 \end{document}
