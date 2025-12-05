@@ -1,192 +1,388 @@
-\documentclass[10pt,pdf,hyperref={unicode}]{beamer}
+\documentclass[aspectratio=169]{beamer}
 
-\mode<presentation>
-{
-\usetheme{boxes}
-\beamertemplatenavigationsymbolsempty
-
-\setbeamertemplate{footline}[page number]
-\setbeamersize{text margin left=0.5em, text margin right=0.5em}
-}
+\usetheme{Madrid}
 
 \usepackage[utf8]{inputenc}
-\usepackage[english, russian]{babel}
-\usepackage{bm}
-\usepackage{multirow}
-\usepackage{ragged2e}
-\usepackage{indentfirst}
-\usepackage{multicol}
-\usepackage{subfig}
-\usepackage{amsmath,amssymb}
-\usepackage{enumerate}
-\usepackage{mathtools}
-\usepackage{comment}
-\usepackage{multicol}
+\usepackage[T2A]{fontenc}
+\usepackage[russian]{babel}
 
-\usepackage[all]{xy}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{graphicx}
+\usepackage{booktabs}
 
-\usepackage{tikz}
-\usetikzlibrary{positioning,arrows}
+\title[Детекция белух]{Сравнение современных методов глубокого обучения\\для автоматической детекции белух в естественной среде}
+\author[Булкин А.\,П.]{Булкин Антон Павлович}
+\institute[МГУ ММП ВМК]{Московский государственный университет имени М.\,В.~Ломоносова\\ 417 группа ММП ВМК\\Научный руководитель: Кравцова Ольга Анатольевна}
+\date{2025}
 
-\tikzstyle{name} = [parameters]
-\definecolor{name}{rgb}{0.5,0.5,0.5}
-
-\usepackage{caption}
-\captionsetup{skip=0pt,belowskip=0pt}
-
-\newtheorem{rustheorem}{Теорема}
-\newtheorem{russtatement}{Утверждение}
-\newtheorem{rusdefinition}{Определение}
-
-% colors
-\definecolor{darkgreen}{rgb}{0.0, 0.2, 0.13}
-\definecolor{darkcyan}{rgb}{0.0, 0.55, 0.55}
-
-\AtBeginEnvironment{figure}{\setcounter{subfigure}{0}}
-
-\captionsetup[subfloat]{labelformat=empty}
-
-%----------------------------------------------------------------------------------------------------------
-
-\title[Пример слайдов по работе]{Пример слайдов по работе \\ курса}
-\author{И.\,О.\,Фамилия}
-
-\institute[]{Московский физико-технический институт}
-\date[2022]{\small 10\;февраля\;2022\,г.}
-
-%---------------------------------------------------------------------------------------------------------
 \begin{document}
 
 \begin{frame}
-\titlepage
+  \titlepage
 \end{frame}
 
-%----------------------------------------------------------------------------------------------------------
-\section{Слайд об исследованиях}
-\begin{frame}{Слайд об исследованиях}
-\bigskip
-Исследуется проблема \ldots.
-\begin{block}{Цель исследования~---}
-предложить метод \ldots.
-\end{block}
-\begin{block}{Требуется предложить}
-\justifying
-\begin{enumerate}[1)]
-\item метод \ldots,
-\item метод \ldots,
-\item метод \ldots.
-\end{enumerate}
-\end{block}
-\begin{block}{Решение}
-Для \ldots.
-\end{block}
+\begin{frame}{Введение}
+  \begin{itemize}
+    \item Белуха --- редкий и охраняемый вид морских млекопитающих, требующий регулярного мониторинга в естественной среде обитания.
+    \item Традиционные методы (экспедиции, визуальный подсчёт, акустический мониторинг) трудоёмки, субъективны и плохо масштабируются.
+    \item Методы компьютерного зрения и глубокого обучения позволяют:
+      \begin{itemize}
+        \item уменьшить затраты на ручную обработку данных;
+        \item повысить воспроизводимость измерений;
+        \item масштабировать мониторинг по времени и пространству.
+      \end{itemize}
+    \item Цель: автоматическая детекция и трекинг белух на аэровидео с дронов.
+  \end{itemize}
 \end{frame}
 
-%---------------------------------------------------------------------------------------------------------
-\section{Постановка задачи \ldots}
-\begin{frame}{Постановка задачи \ldots}
-Заданы
-\begin{enumerate}[1)]
-    \item признаки \ldots,
-    \item целевая переменная \ldots,
-    \item \ldots.
-\end{enumerate}
-
-\ldots
-
-\bigskip
-
-Требуется выбрать модель \ldots из множества
-\[
-	\mathfrak{G} = \left\{\mathbf{g}| \mathbf{g}:\mathbb{R}^{n} \to \mathbb{Y}^\prime\right\}.
-\]
-Оптимизационная задача \ldots:
-\[
-	\mathbf{g} = \arg\min_{\mathbf{g} \in \mathfrak{G}} \mathcal{L}\bigr(\ldots\bigr),
-\]
-где $\mathcal{L}$~--- функция ошибки.
-
-\bigskip
-\footnotetext[1]{\textit{Lopez-Paz D., Bottou L., Scholkopf B., Vapnik V.} Unifying distillation and privileged information // ICLR, 2016.}
-\footnotetext[2]{\textit{Hinton G., Vinyals O., Dean J.} Distilling the knowledge in a neural network // NIPS, 2015.}
+\begin{frame}{Актуальность}
+  \begin{itemize}
+    \item Экологический контекст:
+      \begin{itemize}
+        \item белухи --- индикатор состояния морских экосистем;
+        \item необходимы объективные долгосрочные ряды наблюдений;
+        \item получения данных для дальнейшего исселдований взаимодействия животных.
+      \end{itemize}
+    \item Технические сложности:
+      \begin{itemize}
+        \item малый размер животных в кадре, сильная рябь и блики на воде;
+        \item частичные окклюзии, схожесть белух с фоновыми объектами (камни, лодки, птицы);
+        \item ограниченность размеченных данных и высокая стоимость аннотаций.
+      \end{itemize}
+    \item В литературе используются разные датасеты и протоколы оценки,
+          что осложняет прямое сравнение методов, а также рассматриваются старые поколения нейросетевых методов.
+  \end{itemize}
 \end{frame}
 
-%----------------------------------------------------------------------------------------------------------
-\section{Предложенный метод \ldots}
-\begin{frame}{Предложенный метод \ldots}
-~\\[-1mm]
-Заданы
-\begin{enumerate}[1)]
-	\item \ldots,
-	\item \ldots.
-\end{enumerate}
-
-\medskip
-Параметрические семейства:
-\[
-\setlength\abovedisplayskip{0pt}
-\mathfrak{F} = \left\{\mathbf{f}| \mathbf{f} = \text{softmax}\bigr(\mathbf{v}\bigr(\mathbf{x}\bigr)/T\bigr), \quad \mathbf{v}: \mathbb{R}^{n} \to \mathbb{R}^K \right\},
-\]
-\[
-\mathfrak{G} = \left\{\mathbf{g}| \mathbf{g} = \text{softmax}\bigr(\mathbf{z}\bigr(\mathbf{x}\bigr)/T\bigr), \quad \mathbf{z}: \mathbb{R}^n \to \mathbb{R}^K \right\},
-\]
-где~\ldots.
-
-\medskip
-Функция ошибки
-\[
-\setlength\abovedisplayskip{0pt}
-\begin{aligned}
-   \mathcal{L}\bigr(\mathbf{g}\bigr) = &-\sum_{i=1}^{m}\underbrace{{\sum_{k=1}^{K}y^k_i\log\mathbf{g}\bigr(\mathbf{x}_i\bigr)\bigr|_{T=1}}}_{\text{исходная функция потерь}}- \sum_{i=1}^{m}\underbrace{{\sum_{k=1}^{K}\mathbf{f}\bigr(\mathbf{x}_i\bigr)\bigr|_{T=T_0}\log\mathbf{g}\bigr(\mathbf{x}_i\bigr)\bigr|_{T=T_0}}}_{\text{слагаемое дистилляции}},
-\end{aligned}
-\setlength\belowdisplayskip{0pt}
-\]
-где~\ldots.
-
-Оптимальная модель выбирается из класса,
-$\hat{\mathbf{g}} = \arg\min\limits_{\mathbf{g} \in \mathfrak{G}_{\text{cl}}} \mathcal{L}\bigr(\mathbf{g}\bigr).$
+\begin{frame}{Постановка задачи}
+  \begin{itemize}
+    \item Исходный видеокорпус: $\sim 450$ ГБ 4K-видео с бортов квадрокоптеров.
+    \item Формируются наборы изображений с аннотацией в формате COCO:
+      \[
+        \mathcal{S} = \{(x_i, Y_i)\}_{i=1}^N,\quad
+        Y_i = \{(b_{ij}, c_{ij})\}_{j=1}^{M_i},
+      \]
+      где $b_{ij} = (x,y,w,h)$ --- ограничивающая рамка, $c_{ij}$ --- класс.
+    \item Два режима разметки:
+      \begin{itemize}
+        \item \textbf{one}: $C = \{\text{beluga}\}$ (только белухи);
+        \item \textbf{mlt}: многокласс $C = \{\text{beacon, beluga, bird, person, rocks, seaweed, ship}\}$.
+      \end{itemize}
+    \item Детектор
+      \[
+        f_\theta : \mathcal{X} \to 2^{\mathcal{B}\times\mathcal{C}\times[0,1]},\quad
+        f_\theta(x) = \{(\hat b_k, \hat c_k, \hat p_k)\}_{k=1}^{\hat M},
+      \]
+      выдаёт рамки, классы и уверенности.
+    \item Для видео дополнительно строится трекер $h_{\theta,\varphi}$,
+          ассоциирующий детекции по кадрам и восстанавливающий траектории белух.
+  \end{itemize}
 \end{frame}
 
-%----------------------------------------------------------------------------------------------------------
-\section{Анализ предложенного метода \ldots}
-\begin{frame}{Анализ предложенного метода \ldots}
-\justifying
-
-На графике показана зависимость значения параметров$w_i$ в зависимости от параметра~$l_1$-регуляризации~$C$.
-\begin{figure}[h!]
-\includegraphics[width=0.45\textwidth]{../figures/log_reg_cs_exp.eps}
-\includegraphics[width=0.45\textwidth]{../figures/log_reg_cs_exp.eps}
-\end{figure}
-
-С увеличением параметра регуляризации~$C$ число ненулевых параметров~$w_i$ уменьшается.
+\begin{frame}{Метрики оценки качества}
+  \textbf{Детекция}
+  \begin{itemize}
+    \item Средняя точность по классам:
+      \[
+        \mathrm{mAP@0.5}
+        =
+        \frac{1}{|\mathcal{C}|}
+        \sum_{c \in \mathcal{C}}
+        \mathrm{AP}_c(\mathrm{IoU} = 0.5),
+      \]
+      \[
+        \mathrm{mAP@[0.5:0.95]}
+        =
+        \frac{1}{|\mathcal{C}|\cdot 10}
+        \sum_{c \in \mathcal{C}}
+        \sum_{\alpha=0.5}^{0.95}
+        \mathrm{AP}_c(\mathrm{IoU} = \alpha),
+      \]
+      шаг по $\alpha$ равен $0.05$.
+    \item Временные характеристики:
+      \begin{itemize}
+        \item $\tau_{\text{train}}$ --- среднее время одной эпохи обучения (мин);
+        \item $\tau_{\text{inf}}$ --- средняя задержка инференса на изображение (мс).
+      \end{itemize}
+  \end{itemize}
 
 \end{frame}
 
-%----------------------------------------------------------------------------------------------------------
-\section{Выводы}
-\begin{frame}{Выводы}
-\justifying
-	\begin{enumerate}
-	\justifying
-	    \item Предложен \ldots.
-        \item Доказаны теоремы \ldots, 
-        \begin{itemize}
-            \item[---] \ldots,
-            \item[---] \ldots.
-        \end{itemize}
-        \item Предложен метод \ldots
-        \begin{itemize}
-            \item[---] \ldots,
-            \item[---] \ldots.
-        \end{itemize}
-        \item Предложены методы \ldots
-        \begin{itemize}
-            \item[---] \ldots,
-            \item[---] \ldots.
-        \end{itemize}
-        \item Предложена вероятностная интерпретации \ldots.
-	\end{enumerate}
+\begin{frame}{Метрики оценки качества}
+  \textbf{Трекинг}
+  \begin{itemize}
+    \item Точность многообъектного трекинга:
+      \[
+        \mathrm{MOTA}(h_{\theta,\varphi})
+        =
+        1
+        -
+        \frac{
+          \displaystyle
+          \sum_{k=1}^{K}
+          \sum_{t=1}^{T_k}
+          \bigl(
+            \mathrm{FN}_{k,t} + \mathrm{FP}_{k,t} + \mathrm{IDSW}_{k,t}
+          \bigr)
+        }{
+          \displaystyle
+          \sum_{k=1}^{K}
+          \sum_{t=1}^{T_k}
+          \mathrm{GT}_{k,t}
+        }.
+      \]
+    \item Дополнительно анализируются метрика IDF1 и число переключений IDSW.
+  \end{itemize}
 \end{frame}
-%----------------------------------------------------------------------------------------------------------
 
-\end{document} 
+\begin{frame}{Метрики оценки качества}
+  \textbf{Трекинг}
+  \begin{itemize}
+    \item Точность многообъектного трекинга:
+      \[
+        \mathrm{MOTA}(h_{\theta,\varphi})
+        =
+        1
+        -
+        \frac{
+          \displaystyle
+          \sum_{k=1}^{K}
+          \sum_{t=1}^{T_k}
+          \bigl(
+            \mathrm{FN}_{k,t} + \mathrm{FP}_{k,t} + \mathrm{IDSW}_{k,t}
+          \bigr)
+        }{
+          \displaystyle
+          \sum_{k=1}^{K}
+          \sum_{t=1}^{T_k}
+          \mathrm{GT}_{k,t}
+        }.
+      \]
+
+    \item  IDF1 (F1-мера по идентичностям):
+      \[
+        \mathrm{IDF1}
+        =
+        \frac{
+          2 \cdot \mathrm{IDTP}
+        }{
+          2 \cdot \mathrm{IDTP}
+          + \mathrm{IDFP}
+          + \mathrm{IDFN}
+        },
+      \]
+      где $\mathrm{IDTP}$, $\mathrm{IDFP}$ и $\mathrm{IDFN}$ считаются на уровне целых траекторий.
+
+    \item Число переключений идентичностей IDSW.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}{Алгоритмы и методы: детекторы}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \textbf{Классический baseline}
+      \begin{itemize}
+        \item Конвейер Computer Vision: \\
+              \(
+                \text{предобработка} \;\to\;
+                \text{генерация кандидатов} \;\to\; 
+                \text{SVM-классификация} \;\to\;
+                \text{NMS}.
+              \)
+      \end{itemize}
+
+      \vspace{0.4em}
+      \textbf{Современные детекторы}
+      \begin{itemize}
+        \item \textbf{YOLOv12}:
+          одноэтапный детектор с backbone, FPN/PAN и многомасштабными головами;
+          оптимизирован под компромисс ``качество--скорость''.
+        \item \textbf{YOLOWorld}:
+          open-vocabulary вариант YOLO, расширенный текстовым энкодером
+          $t(c)$; классы задаются текстовыми описаниями.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{YOLO_1.png}
+        \caption{\scriptsize Схема одноэтапного детектора семейства YOLO.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Алгоритмы и методы: детекторы}
+  \begin{columns}[T]
+    \begin{column}{0.4\textwidth}
+
+      \vspace{0.4em}
+      \textbf{Современные детекторы}
+      \begin{itemize}
+        \item \textbf{RT-DETR}:
+          детектор на основе трансформера (backbone + encoder--decoder),
+          использующий объектные ``queries'' и глобальный контекст кадра.
+        \item \textbf{RetinaNet}:
+          одноэтапный детектор с FPN и Focal Loss, лучше обрабатывающий дисбаланс
+          между фоном и объектами.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      \vspace{0.2em}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{RTDETR.png}
+        \caption{Архитектура RT-DETR}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Алгоритмы и методы: трекеры}
+  \begin{itemize}
+    \item Вход трекера: последовательность кадров $v^{(k)} = (x_{k,t})_{t=1}^{T_k}$
+          и детекции $f_\theta(x_{k,t})$ на каждом кадре.
+    \item Выход трекера: набор траекторий
+      \(
+        h_{\theta,\varphi}(v^{(k)}) = \{\tau_\ell^{(k)}\}_{\ell=1}^{L_k},
+      \)
+      каждая $\tau_\ell^{(k)}$ --- отслеживаемая белуха с уникальным ID.
+  \end{itemize}
+
+  \vspace{0.4em}
+  \textbf{Рассматриваемые трекеры}
+  \begin{itemize}
+    \item \textbf{DeepSORT}
+      \begin{itemize}
+        \item Калмановская фильтрация для прогноза положения объектов.
+        \item Венгерский алгоритм для сопоставления предсказаний и наблюдений.
+        \item Глубокие дескрипторы внешнего вида для устойчивости к окклюзиям.
+      \end{itemize}
+    \item \textbf{ByteTrack}
+      \begin{itemize}
+        \item Простая, но эффективная схема data association.
+        \item Использует детекции с высокой и средней уверенностью,
+              уменьшая число пропусков.
+      \end{itemize}
+    \item \textbf{BoT-SORT}
+      \begin{itemize}
+        \item Развитие идей SORT/DeepSORT.
+        \item Более аккуратная работа с пересечениями траекторий
+              и компенсацией движения камеры, использует дополнительные признаки
+              скорости и формы.
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Данные}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+        \item Объёмы размеченных наборов:
+          \(
+            N \in \{400,\; 800,\; 1200,\; \sim 8000\}.
+          \)
+        \item Для $N \in \{400, 800, 1200\}$ используются оба режима разметки (one/mlt).
+        \item Для $\sim 8000$ кадров аннотации получены полуавтоматически:
+          \begin{itemize}
+            \item начальная ручная разметка;
+            \item обучение модели-помощника;
+            \item авторазметка неразмеченных кадров;
+            \item ручная валидация и исправление.
+          \end{itemize}
+        \item Единый формат COCO, единый препроцессинг и протокол обучения для всех моделей.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{example_bel.png}
+        \caption{Пример работы детекторов на реальном кадре.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Анализ результатов: детекция}
+      {\small\textbf{Детекторы (N $\approx 8000$, лучший режим разметки)}}
+      \begin{table}
+        \centering
+        \scriptsize
+        \begin{tabular}{lcccc}
+          \toprule
+          Модель & mAP@0.5 & mAP@[0.5:0.95] & $\tau_{\text{train}}$ (мин) & $\tau_{\text{inf}}$ (мс) \\
+          \midrule
+          YOLOv12   & 0.989 & 0.652 & 13.850 & 17.600 \\
+          YOLOWorld & 0.951 & 0.626 & 16.350 & 10.560 \\
+          RT-DETR   & 0.894 & 0.508 & 37.400 & 58.600 \\
+          RetinaNet & 0.869 & 0.473 &  0.830 &  4.200 \\
+          \bottomrule
+        \end{tabular}
+      \end{table}
+      \vspace{0.3em}
+      \begin{itemize}
+        \item Увеличение объёма данных приводит к росту mAP для всех моделей.
+        \item YOLOv12 даёт наивысший mAP@0.5 при умеренной задержке инференса.
+        \item RT-DETR выигрывает по согласованности на сложном фоне, но заметно медленнее.
+        \item RetinaNet --- лёгкая и быстрая альтернатива при жёстких ограничениях по задержке.
+      \end{itemize}
+\end{frame}
+
+\begin{frame}{Анализ результатов: трекинг}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      {\small\textbf{Трекеры (YOLOv12, режим mlt)}}
+      \begin{table}
+        \centering
+        \scriptsize
+        \begin{tabular}{lcccc}
+          \toprule
+          Трекер & MOTA & IDF1 & IDSW & $\tau_{\text{det+trk}}$ (мс/кадр) \\
+          \midrule
+          BoT-SORT  & 0.742 & 0.711 & 41 & 32.5 \\
+          ByteTrack & 0.789 & 0.770 & 35 & 30.8 \\
+          DeepSORT  & 0.826 & 0.812 & 29 & 33.1 \\
+          \bottomrule
+        \end{tabular}
+      \end{table}
+      \vspace{0.3em}
+      \begin{itemize}
+        \item DeepSORT показывает наибольшие MOTA и IDF1 при умеренном числе IDSW.
+        \item BoT-SORT немного уступает по MOTA, но лучше обрабатывает пересечения траекторий.
+      \end{itemize}
+      \end{column}
+      \begin{column}{0.45\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\linewidth]{belugas_tracking.png}
+        \caption{Пример траекторий белух}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Заключение}
+  \begin{itemize}
+    \item Сформирован воспроизводимый бенчмарк детекции и трекинга белух:
+      \begin{itemize}
+        \item несколько масштабов выборки (от 400 до $\sim 8000$ кадров);
+        \item два режима аннотаций: одноклассовый (one) и многоклассовой (mlt);
+        \item единый протокол обучения и оценки (mAP, MOTA, временные характеристики).
+      \end{itemize}
+    \item Показано, что современные детекторы семейства YOLO
+          значительно превосходят классический baseline и трансформерные/двухэтапные
+          альтернативы на рассматриваемых данных.
+    \item Интеграция детектора YOLOv12 с трекерами DeepSORT, ByteTrack и BoT-SORT
+          позволяет получать устойчивые траектории белух.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Конец}
+    \begin{center}
+        {\LARGE \textbf{Спасибо за внимание!}}
+    \end{center}
+\end{frame}
+
+
+\end{document}
